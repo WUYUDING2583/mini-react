@@ -5,11 +5,8 @@ This repository is for me to learn the React framework and how to build a web fr
 
 # Plan
 
-## Day 1 (2020.05.15)
+## Day 1 (2020.05.17)
 
 1. Initiate project
-
-1. Config `npm start`
-
-1. Config `webpack5`
+2. Implement `npm start`
 
