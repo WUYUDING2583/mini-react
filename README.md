@@ -1,6 +1,6 @@
 This repository is for me to learn the React framework and how to build a web framework from zero.
 
-> React Version: v18.0.0
+> React Version: v18.1.0
 >
 
 # Plan
