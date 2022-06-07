@@ -1,4 +1,3 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const appDirectory = process.cwd();
 module.exports = {
@@ -9,9 +8,4 @@ module.exports = {
     path: path.resolve("dist"),
     clean: true, //clean the output directory before generate bundles
   },
-  // plugins: [
-  //   new HtmlWebpackPlugin({
-  //     title: "mini-react",
-  //   }),
-  // ],
 };
