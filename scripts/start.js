@@ -1,25 +1,7 @@
-const path = require("path");
 const webpack = require("webpack");
 const WebpackDevServer = require("webpack-dev-server");
 const chalk = require("chalk");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-
-const appDirectory = process.cwd();
-
-const webpackConfig = {
-  mode: "development",
-  entry: path.resolve(appDirectory, "src/index.js"),
-  output: {
-    filename: "[name].bundle.js",
-    path: path.resolve("dist"),
-    clean: true,
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      title: "mini-react",
-    }),
-  ],
-};
+const webpackConfig = require("../webpack.config");
 
 let compiler;
 try {
@@ -29,8 +11,8 @@ try {
 }
 
 const serverConfig = {
-  port: 3001,
-  open: true,
+  port: 3001, //set the port to 3001
+  open: true, // open browser after compiling finish
 };
 
 const devServer = new WebpackDevServer(serverConfig, compiler);
