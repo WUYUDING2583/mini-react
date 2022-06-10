@@ -2,7 +2,13 @@ const webpack = require("webpack");
 const WebpackDevServer = require("webpack-dev-server");
 const chalk = require("chalk");
 const path = require("path");
-const webpackConfig = require("../webpack.config");
+const webpackConfig = require("../config/webpack.config");
+const checkRequiredFiles = require("../modules/dev-utils/checkRequiredFiles");
+const paths = require("../config/paths");
+
+if (!checkRequiredFiles(paths.appHtml, paths.appIndexJs)) {
+  process.exit(1);
+}
 
 let compiler;
 try {
@@ -13,7 +19,7 @@ try {
 
 const serverConfig = {
   port: 3001, //set the port to 3001
-  // open: true, // open browser after compiling finish
+  open: true, // open browser after compiling finish
 };
 
 const devServer = new WebpackDevServer(serverConfig, compiler);

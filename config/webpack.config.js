@@ -1,17 +1,16 @@
-const path = require("path");
-const appDirectory = process.cwd();
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const paths = require("./paths");
 module.exports = {
   mode: "development",
-  entry: { index: path.resolve(appDirectory, "src/index.js") },
+  entry: { index: paths.appIndexJs },
   output: {
     filename: "[name].bundle.js",
-    path: path.resolve("dist"),
+    path: paths.appBuild,
     clean: true, //clean the output directory before generate bundles
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(appDirectory, "public/index.html"),
+      template: paths.appHtml,
     }),
   ],
 };
