@@ -5,4 +5,5 @@ module.exports = {
   appIndexJs: path.resolve("src/index.js"),
   appPublic: path.resolve("public"),
   appHtml: path.resolve("public/index.html"),
+  appPath: path.resolve("."),
 };

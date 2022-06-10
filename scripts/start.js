@@ -5,10 +5,13 @@ const path = require("path");
 const webpackConfig = require("../config/webpack.config");
 const checkRequiredFiles = require("../modules/dev-utils/checkRequiredFiles");
 const paths = require("../config/paths");
+const checkBrowser = require("../modules/dev-utils/checkBrowser");
 
 if (!checkRequiredFiles(paths.appHtml, paths.appIndexJs)) {
   process.exit(1);
 }
+
+checkBrowser(paths.appPath);
 
 let compiler;
 try {
