@@ -13,7 +13,7 @@ try {
 
 const serverConfig = {
   port: 3001, //set the port to 3001
-  open: true, // open browser after compiling finish
+  // open: true, // open browser after compiling finish
 };
 
 const devServer = new WebpackDevServer(serverConfig, compiler);
