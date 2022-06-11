@@ -6,4 +6,5 @@ module.exports = {
   appPublic: path.resolve("public"),
   appHtml: path.resolve("public/index.html"),
   appPath: path.resolve("."),
+  appPackage: path.resolve("package.json"),
 };
