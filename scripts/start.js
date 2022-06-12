@@ -1,13 +1,14 @@
 const webpack = require("webpack");
 const WebpackDevServer = require("webpack-dev-server");
 const chalk = require("chalk");
-const detect = require("detect-port-alt");
 
 const webpackConfig = require("../config/webpack.config");
 const checkRequiredFiles = require("../modules/dev-utils/checkRequiredFiles");
 const paths = require("../config/paths");
 const checkBrowser = require("../modules/dev-utils/checkBrowser");
-const prompts = require("prompts");
+const openBrowser = require("../modules/dev-utils/openBrowser");
+const choosePort = require("../modules/dev-utils/choosePort");
+const prepareUrl = require("../modules/dev-utils/prepareUrl");
 
 const isInteractive = process.stdout.isTTY;
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
@@ -19,47 +20,34 @@ if (!checkRequiredFiles(paths.appHtml, paths.appIndexJs)) {
 
 checkBrowser(paths.appPath, isInteractive)
   .then((config) => {
-    // 1. detect port
-    detect(DEFAULT_PORT, HOST)
-      .then(async (port) => {
-        if (port !== DEFAULT_PORT) {
-          // switch port
-          const question = {
-            type: "confirm",
-            name: "shouldChangePort",
-            message:
-              chalk.yellow(`${DEFAULT_PORT} is occupied.`) +
-              "\n\nWould you like to run the app on the another port instead?",
-          };
-          const { shouldChangePort } = await prompts(question);
-          if (!shouldChangePort) {
-            process.exit(1);
-          }
-        }
-        process.exit(1);
-        let compiler;
-        try {
-          compiler = webpack(webpackConfig);
-        } catch (err) {
-          console.log(err.message || err);
-        }
+    return choosePort(DEFAULT_PORT, HOST);
+  })
+  .then((port) => {
+    // start webpack dev server
+    const protocol = process.env.HTTPS === "true" ? "https" : "http";
+    const urls = prepareUrl(protocol, HOST, port);
+    // 1. get webpack config
+    let compiler;
+    try {
+      // 2. create webpack compiler
+      compiler = webpack(webpackConfig);
+    } catch (err) {
+      console.log(err.message || err);
+    }
 
-        const serverConfig = {
-          port: 3001, //set the port to 3001
-          open: true, // open browser after compiling finish
-        };
+    // 3. create webpack dev server config
+    const serverConfig = {
+      port,
+      host: HOST,
+    };
 
-        const devServer = new WebpackDevServer(serverConfig, compiler);
-        devServer.startCallback(() => {
-          console.log(
-            chalk.blue("Start server successfully http://localhost:3001")
-          );
-        });
-      })
-      .catch((err) => {
-        console.log(chalk.red("All ports are occpuied."));
-        console.log(err);
-      });
+    // 4. instantiate webpack dev server
+    const devServer = new WebpackDevServer(serverConfig, compiler);
+    // 5. launch webpack dev server
+    devServer.startCallback(() => {
+      console.log(chalk.blue("Start server successfully"));
+      openBrowser(urls.localUrlForBrowser);
+    });
   })
   .catch((err) => {
     console.log(chalk.red(err.message));
