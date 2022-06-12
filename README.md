@@ -17,3 +17,7 @@ This repository is for me to learn the React framework and how to build a web fr
 
 1. Check required files
 2. Check browser
+
+## Day4
+
+1. Choose prot
