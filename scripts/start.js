@@ -20,7 +20,7 @@ if (!checkRequiredFiles(paths.appHtml, paths.appIndexJs)) {
 
 checkBrowser(paths.appPath, isInteractive)
   .then((config) => {
-    return choosePort(DEFAULT_PORT, HOST);
+    return choosePort(DEFAULT_PORT, HOST, isInteractive);
   })
   .then((port) => {
     // start webpack dev server

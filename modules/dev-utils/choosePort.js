@@ -1,7 +1,8 @@
 const detect = require("detect-port-alt");
 const prompts = require("prompts");
+const chalk = require("chalk");
 
-async function choosePort(DEFAULT_PORT, HOST) {
+async function choosePort(DEFAULT_PORT, HOST, isInteractive) {
   // detect port
   return detect(DEFAULT_PORT, HOST)
     .then(async (port) => {
@@ -24,6 +25,7 @@ async function choosePort(DEFAULT_PORT, HOST) {
     .catch((err) => {
       console.log(chalk.red("All ports are occpuied."));
       console.log(err);
+      process.exit(1);
     });
 }
 module.exports = choosePort;
