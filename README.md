@@ -26,3 +26,7 @@ This repository is for me to learn the React framework and how to build a web fr
 
 1. Start webpack dev server
 2. Open browser
+
+## Day6
+
+1. Config babel
