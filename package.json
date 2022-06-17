@@ -6,13 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node scripts/start.js",
-    "build": "webpack"
+    "build": "webpack --config ./config/webpack.config.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.18.5",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
     "address": "^1.2.0",
+    "babel-loader": "^8.2.5",
     "browserslist": "^4.20.4",
     "chalk": "^4.1.2",
     "detect-port-alt": "^1.1.6",
