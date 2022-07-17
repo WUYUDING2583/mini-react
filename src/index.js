@@ -1,23 +1,7 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom/client";
-import render from "../modules/react-dom/render";
+import { createRoot } from "../modules/react-dom/ReactDOMRoot";
+import App from "./App";
 
-function FunctionComponent({ name }) {
-  return <h1>{name}</h1>;
-}
+const root = createRoot(document.getElementById("root"));
 
-class ClassComponent extends Component {
-  render() {
-    return <h1>{this.props.name}</h1>;
-  }
-}
-
-const root = document.getElementById("root");
-
-render(
-  <>
-    <FunctionComponent name="Function Component" />
-    <ClassComponent name="Class Component" />
-  </>,
-  root
-);
+root.render(<App />);
