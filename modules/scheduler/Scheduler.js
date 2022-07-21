@@ -1,6 +1,18 @@
+import { peek, push } from "./SchedulerMinHeap";
+
+let scheduledHostCallback = null;
+let currentTask = null;
+
 const performWorkUnitDeadline = () => {
-  console.trace("perform work unit");
+  if (scheduledHostCallback !== null) {
+    try {
+      scheduledHostCallback();
+    } finally {
+    }
+  }
 };
+
+const taskQueue = [];
 
 const channel = new MessageChannel();
 const port = channel.port2;
@@ -13,10 +25,17 @@ const schedulePerformWorkUnitDeadline = () => {
 };
 
 export function scheduleCallback(priorityLevel, callback, options) {
+  const newTask = {
+    callback,
+  };
+
+  push(taskQueue, newTask);
+
   requestHostCallback(flushWork);
 }
 
 function requestHostCallback(callback) {
+  scheduledHostCallback = callback;
   schedulePerformWorkUnitDeadline();
 }
 
@@ -24,4 +43,13 @@ function flushWork(hasTimeRemaining, initialTime) {
   return workLoop(hasTimeRemaining, initialTime);
 }
 
-function workLoop(hasTimeRemaining, initialTime) {}
+function workLoop(hasTimeRemaining, initialTime) {
+  currentTask = peek(taskQueue);
+  // while (currentTask) {
+  const callback = currentTask.callback;
+  if (typeof callback === "function") {
+    currentTask.callback = null;
+    callback();
+  }
+  // }
+}

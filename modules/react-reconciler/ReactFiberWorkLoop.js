@@ -1,4 +1,8 @@
 import { scheduleCallback } from "../scheduler/Scheduler";
+import { createWorkInProgress } from "./ReactFiber";
+import { beginWork } from "./ReactFiberBeginWorks";
+
+let workInProgress = null;
 
 export function scheduleUpdateOnFiber(fiber, lane, eventTime) {
   const root = fiber.stateNode;
@@ -11,5 +15,30 @@ export function ensureRootIsScheduled(root, currentTime) {
 }
 
 function performConcurrentWorkOnRoot(root) {
-  console.trace();
+  renderRootSync(root);
+}
+
+function renderRootSync(root, lanes) {
+  prepareFreshStack(root, lanes);
+  do {
+    workLoopSync();
+    break;
+  } while (true);
+}
+
+function workLoopSync() {
+  while (workInProgress != null) {
+    performUnitOfWork(workInProgress);
+  }
+}
+
+function performUnitOfWork(unitOfWork) {
+  const current = unitOfWork.alternate;
+  let next = beginWork(current, unitOfWork);
+  workInProgress = null;
+}
+
+function prepareFreshStack(root, lanes) {
+  const rootWorkInProgress = createWorkInProgress(root.current, null);
+  workInProgress = rootWorkInProgress;
 }
