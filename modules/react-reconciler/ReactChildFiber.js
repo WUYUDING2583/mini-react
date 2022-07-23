@@ -1,10 +1,14 @@
+import { createFiberFromElement } from "./ReactFiber";
+
 function reconcileSingleElement(
   returnFiber,
   currentFirstChild,
   element,
   lanes
 ) {
-  console.trace();
+  const created = createFiberFromElement(element, returnFiber.mode, lanes);
+  created.return = returnFiber;
+  return created;
 }
 
 function ChildReconciler(shouldTracksSideEffects) {

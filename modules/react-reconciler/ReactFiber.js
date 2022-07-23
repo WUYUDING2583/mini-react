@@ -1,4 +1,4 @@
-import { HostRoot } from "./ReactWorkTags";
+import { HostRoot, Mode } from "./ReactWorkTags";
 
 function FiberNode(tag, pendingProps, key = null, mode) {
   // Instance
@@ -53,6 +53,41 @@ export function createWorkInProgress(current, pendingProps) {
 
   workInProgress.child = current.child;
   workInProgress.memoizedState = current.memoizedState;
+  workInProgress.updateQueue = current.updateQueue;
   workInProgress.sibling = current.sibling;
   return workInProgress;
+}
+
+export function createFiberFromTypeAndProps(
+  type,
+  key,
+  pendingProps,
+  owner,
+  mode,
+  lanes
+) {
+  let fiberTag = Mode;
+  let resolvedType = type;
+  const fiber = createFiber(fiberTag, pendingProps, key, mode);
+  fiber.elementType = type;
+  fiber.type = resolvedType;
+  fiber.lanes = lanes;
+  return fiber;
+}
+
+export function createFiberFromElement(element, mode, lanes) {
+  console.trace();
+  let owner = null;
+  const type = element.type;
+  const key = element.key;
+  const pendingProps = element.props;
+  const fiber = createFiberFromTypeAndProps(
+    type,
+    key,
+    pendingProps,
+    owner,
+    mode,
+    lanes
+  );
+  return fiber;
 }

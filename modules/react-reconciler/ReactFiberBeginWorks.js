@@ -1,4 +1,5 @@
 import { reconcileChildFiber } from "./ReactChildFiber";
+import { processUpdateQueue } from "./ReactUpdateQueue";
 import { HostRoot } from "./ReactWorkTags";
 
 export function reconcileChildren(
@@ -16,7 +17,13 @@ export function reconcileChildren(
 }
 
 function updateHostRoot(current, workInProgress, renderLanes) {
-  reconcileChildren(current, workInProgress, null, renderLanes);
+  const nextProps = workInProgress.pendingProps;
+  const prevState = workInProgress.memoizedState;
+  processUpdateQueue(workInProgress, nextProps, null, renderLanes);
+  const nextState = workInProgress.memoizedState;
+  const nextChildren = nextState.element;
+
+  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
   return workInProgress.child;
 }
 

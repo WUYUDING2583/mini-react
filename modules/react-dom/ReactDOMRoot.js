@@ -1,5 +1,6 @@
 import { updateContainer } from "../react-reconciler/ReactFiberReconciler";
 import { createFiberRoot } from "../react-reconciler/ReactFiberRoot";
+import { ConcurrentRoot } from "../react-reconciler/ReactRootTags";
 
 function ReactDOMRoot(internalRoot) {
   this._internalRoot = internalRoot;
@@ -11,6 +12,7 @@ ReactDOMRoot.prototype.render = function (children) {
 };
 
 export function createRoot(container) {
-  const root = createFiberRoot(container);
+  const initialChildren = null;
+  const root = createFiberRoot(container, ConcurrentRoot, initialChildren);
   return new ReactDOMRoot(root);
 }
