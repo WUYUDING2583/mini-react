@@ -1,5 +1,9 @@
 import { createFiberFromElement } from "./ReactFiber";
 
+function placeSingleChild(newFiber) {
+  return newFiber;
+}
+
 function reconcileSingleElement(
   returnFiber,
   currentFirstChild,
@@ -12,15 +16,17 @@ function reconcileSingleElement(
 }
 
 function ChildReconciler(shouldTracksSideEffects) {
-  function reconcileChildFiber(
+  function reconcileChildFibers(
     returnFiber,
     currentFirstChild,
     newChild,
     lanes
   ) {
-    reconcileSingleElement(returnFiber, currentFirstChild, newChild, lanes);
+    return placeSingleChild(
+      reconcileSingleElement(returnFiber, currentFirstChild, newChild, lanes)
+    );
   }
-  return reconcileChildFiber;
+  return reconcileChildFibers;
 }
 
-export const reconcileChildFiber = ChildReconciler(true);
+export const reconcileChildFibers = ChildReconciler(true);

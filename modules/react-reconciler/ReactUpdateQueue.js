@@ -28,6 +28,7 @@ export function createUpdate(eventTime, lane) {
 
 export function enqueueUpdate(fiber, update, lane) {
   console.trace();
+  console.log("enqueueUpdate", fiber);
   const updateQueue = fiber.updateQueue;
   const sharedQueue = updateQueue.shared;
   const pending = sharedQueue.pending;
@@ -43,19 +44,51 @@ export function processUpdateQueue(
   instance,
   renderLanes
 ) {
+  console.log("processUpdateQueue", arguments);
   const queue = workInProgress.updateQueue;
   let firstBaseUpdate = queue.firstBaseUpdate;
   let lastBaseUpdate = queue.lastBaseUpdate;
-  let update = firstBaseUpdate;
-  const newState = getStateFromUpdate(
-    workInProgress,
-    null,
-    update,
-    newState,
-    props,
-    instance
-  );
-  workInProgress.memoizedState = newState;
+  let pendingQueue = queue.shared.pending;
+  if (pendingQueue !== null) {
+    queue.shared.pending = null;
+
+    const lastPendingUpdate = pendingQueue;
+    const firstPendingUpdate = lastPendingUpdate.next;
+    lastPendingUpdate.next = null;
+    if (lastBaseUpdate === null) {
+      firstBaseUpdate = firstPendingUpdate;
+    } else {
+      lastBaseUpdate.next = firstPendingUpdate;
+    }
+    lastBaseUpdate = lastPendingUpdate;
+
+    const current = workInProgress.alternate;
+    if (current !== null) {
+      const currentQueue = current.updateQueue;
+      const currentLastBaseUpdate = currentQueue.lastBaseUpdate;
+      if (currentLastBaseUpdate !== lastBaseUpdate) {
+        if (currentLastBaseUpdate === null) {
+          currentQueue.firstBaseUpdate = firstPendingUpdate;
+        } else {
+          currentLastBaseUpdate.next = firstPendingUpdate;
+        }
+        currentQueue.lastBaseUpdate = lastPendingUpdate;
+      }
+    }
+  }
+  if (firstBaseUpdate !== null) {
+    let newState = queue.baseState;
+    let update = firstBaseUpdate;
+    newState = getStateFromUpdate(
+      workInProgress,
+      null,
+      update,
+      newState,
+      props,
+      instance
+    );
+    workInProgress.memoizedState = newState;
+  }
 }
 
 function getStateFromUpdate(
@@ -69,5 +102,5 @@ function getStateFromUpdate(
   console.log(arguments);
   const payload = update.payload;
   let partialState = payload;
-  return assign({}, prevState, partialState);
+  return Object.assign({}, prevState, partialState);
 }

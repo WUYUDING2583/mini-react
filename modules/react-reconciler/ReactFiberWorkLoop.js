@@ -1,6 +1,7 @@
 import { scheduleCallback } from "../scheduler/Scheduler";
 import { createWorkInProgress } from "./ReactFiber";
 import { beginWork } from "./ReactFiberBeginWorks";
+import { completeWork } from "./ReactFiberCompleteWork";
 
 let workInProgress = null;
 
@@ -35,7 +36,37 @@ function workLoopSync() {
 function performUnitOfWork(unitOfWork) {
   const current = unitOfWork.alternate;
   let next = beginWork(current, unitOfWork);
-  workInProgress = null;
+  unitOfWork.memoizedProps = unitOfWork.pendingProps;
+  if (next === null) {
+    completeUnitOfWork(unitOfWork);
+  } else {
+    workInProgress = next;
+  }
+}
+
+function completeUnitOfWork(unitOfWork) {
+  let completedWork = unitOfWork;
+  console.log("completeUnitOfWork", unitOfWork);
+  do {
+    const current = completedWork.alternate;
+    const returnFiber = completedWork.return;
+
+    completedWork = null;
+    workInProgress = null;
+    break;
+    let next = completeWork(current, completedWork);
+    if (next !== null) {
+      workInProgress = next;
+      return;
+    }
+    const siblingFiber = completedWork.sibling;
+    if (siblingFiber !== null) {
+      workInProgress = siblingFiber;
+      return;
+    }
+    completedWork = returnFiber;
+    workInProgress = completedWork;
+  } while (completedWork !== null);
 }
 
 function prepareFreshStack(root, lanes) {

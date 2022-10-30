@@ -1,4 +1,4 @@
-import { reconcileChildFiber } from "./ReactChildFiber";
+import { reconcileChildFibers } from "./ReactChildFiber";
 import { processUpdateQueue } from "./ReactUpdateQueue";
 import { HostRoot } from "./ReactWorkTags";
 
@@ -8,7 +8,7 @@ export function reconcileChildren(
   nextChildren,
   renderLanes
 ) {
-  workInProgress.child = reconcileChildFiber(
+  workInProgress.child = reconcileChildFibers(
     workInProgress,
     current.child,
     nextChildren,
@@ -31,5 +31,7 @@ export function beginWork(current, workInProgress, renderLanes) {
   switch (workInProgress.tag) {
     case HostRoot:
       return updateHostRoot(current, workInProgress, renderLanes);
+    default:
+      return null;
   }
 }

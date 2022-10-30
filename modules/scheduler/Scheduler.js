@@ -44,9 +44,11 @@ function flushWork(hasTimeRemaining, initialTime) {
 }
 
 function workLoop(hasTimeRemaining, initialTime) {
+  console.trace("workLoop");
   currentTask = peek(taskQueue);
   // while (currentTask) {
   const callback = currentTask.callback;
+
   if (typeof callback === "function") {
     currentTask.callback = null;
     callback();
