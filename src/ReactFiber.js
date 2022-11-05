@@ -1,5 +1,11 @@
-import { FunctionComponent, HostComponent } from "./ReactWorkTag";
-import { isFn, isStr, Placement } from "./utils";
+import {
+  ClassComponent,
+  Fragment,
+  FunctionComponent,
+  HostComponent,
+  HostText,
+} from "./ReactWorkTag";
+import { isFn, isStr, isUndefined, Placement } from "./utils";
 
 export function createFiber(vnode, returnFiber) {
   const fiber = {
@@ -26,7 +32,14 @@ export function createFiber(vnode, returnFiber) {
     // when type is string, e.g. "div", "h1", it's a host compoent
     fiber.tag = HostComponent;
   } else if (isFn(type)) {
-    fiber.tag = FunctionComponent;
+    fiber.tag = type.prototype.isReactComponent
+      ? ClassComponent
+      : FunctionComponent;
+  } else if (isUndefined(type)) {
+    fiber.tag = HostText;
+    fiber.props = { children: vnode };
+  } else {
+    fiber.tag = Fragment;
   }
   return fiber;
 }

@@ -82,7 +82,7 @@ function commitRoot() {
 function commitWorker(workInProgres) {
   if (!workInProgres) return;
   // 1. commit itself
-  const parentNode = workInProgres.return.stateNode;
+  const parentNode = getParentNode(workInProgres.return);
   const { flags, stateNode } = workInProgres;
   if (flags & Placement && stateNode) {
     parentNode.appendChild(stateNode);
@@ -94,3 +94,13 @@ function commitWorker(workInProgres) {
 }
 
 requestIdleCallback(workLoop);
+
+function getParentNode(workInProgres) {
+  let temp = workInProgres;
+  while (temp) {
+    if (temp.stateNode) {
+      return temp.stateNode;
+    }
+    temp = temp.return;
+  }
+}
