@@ -10,4 +10,8 @@ npm run dev
 
 ## Initial render
 
-For the initial render implementation reference to brach [v1-first-render](https://github.com/yuyi2583/mini-react/tree/v1-first-render). In this branch, I implemented the `performUnitOfWork`, `reconcilerChildren` and implemented `scheduleUpdateonFiber` by using `requestIdleCallback`
+For the initial render implementation reference to branch [v1-first-render](https://github.com/yuyi2583/mini-react/tree/v1-first-render). In this branch, I implemented the `performUnitOfWork`, `reconcilerChildren` and implemented `scheduleUpdateonFiber` by using `requestIdleCallback`
+
+## Scheduler
+
+For the detail implementation reference to branch [v2-scheduler](https://github.com/yuyi2583/mini-react/tree/v2-scheduler)
