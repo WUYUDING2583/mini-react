@@ -1,7 +1,9 @@
+import { renderWithHooks } from "./hooks";
 import { createFiber } from "./ReactFiber";
-import { isArray, isStringOrNumber, updateNode } from "./utils";
+import { isArray, isStringOrNumber, Update, updateNode } from "./utils";
 
 export function updateFunctionComponent(workInProgres) {
+  renderWithHooks(workInProgres);
   const { type, props } = workInProgres;
   const children = type(props);
   // console.log("updateFunctionComponent", children);
@@ -11,7 +13,7 @@ export function updateFunctionComponent(workInProgres) {
 export function updateHostComponent(workInProgres) {
   if (!workInProgres.stateNode) {
     workInProgres.stateNode = document.createElement(workInProgres.type);
-    updateNode(workInProgres.stateNode, workInProgres.props);
+    updateNode(workInProgres.stateNode, {}, workInProgres.props);
   }
 
   reconcilerChildren(workInProgres, workInProgres.props.children);
@@ -38,10 +40,26 @@ function reconcilerChildren(workInProgres, children) {
     return;
   }
   const newChildren = isArray(children) ? children : [children];
+
+  let oldFiber = workInProgres.alternate?.child;
+
   let previousNewFiber = null;
   for (let i = 0; i < newChildren.length; i++) {
     const newChild = newChildren[i];
     const newFiber = createFiber(newChild, workInProgres);
+    const same = sameNode(newFiber, oldFiber);
+    if (same) {
+      Object.assign(newFiber, {
+        stateNode: oldFiber.stateNode,
+        alternate: oldFiber,
+        flags: Update,
+      });
+    }
+
+    if (oldFiber) {
+      oldFiber = oldFiber.sibling;
+    }
+
     if (previousNewFiber === null) {
       // first child
       workInProgres.child = newFiber;
@@ -50,4 +68,12 @@ function reconcilerChildren(workInProgres, children) {
     }
     previousNewFiber = newFiber;
   }
+}
+
+// To reuse node
+// 1. in same level
+// 2. same type
+// 3. same key
+function sameNode(a, b) {
+  return a && b && a.type === b.type && a.key === b.key;
 }

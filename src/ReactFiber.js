@@ -25,6 +25,11 @@ export function createFiber(vnode, returnFiber) {
     flags: Placement,
     // the index of node under current tier
     index: null,
+
+    // store old fiber
+    alternate: null,
+    // the hook linked list head
+    memorizedState: null,
   };
 
   const { type } = vnode;

@@ -13,7 +13,7 @@ import {
   HostText,
 } from "./ReactWorkTag";
 import { scheduleCallback } from "./scheduler";
-import { Placement } from "./utils";
+import { Placement, Update, updateNode } from "./utils";
 
 let workInProgres = null;
 let workInProgresRoot = null;
@@ -89,6 +89,10 @@ function commitWorker(workInProgres) {
   const { flags, stateNode } = workInProgres;
   if (flags & Placement && stateNode) {
     parentNode.appendChild(stateNode);
+  }
+
+  if (flags & Update && stateNode) {
+    updateNode(stateNode, workInProgres.alternate.props, workInProgres.props);
   }
   // 2. commit child
   commitWorker(workInProgres.child);
